@@ -96,7 +96,7 @@ function HomePage() {
   const addFiles = (e) => {
     const newFiles = [...e.target.files].map((file, i) => ({
       id: uniqueId(), // Replace this with your actual unique ID generation logic
-      placeholderDataURL: "/images/no-image.jpeg",
+      placeholderDataURL: "/images/no-image.jpg",
       file: file,
     }));
 
@@ -116,7 +116,7 @@ function HomePage() {
 
     const newFiles = [...droppedFiles].map((file, i) => ({
       id: uniqueId(), // Replace this with your actual unique ID generation logic
-      placeholderDataURL: "/images/no-image.jpeg",
+      placeholderDataURL: "/images/no-image.jpg",
       file: file,
     }));
 
