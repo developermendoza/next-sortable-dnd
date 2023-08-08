@@ -105,6 +105,8 @@ const FilePreview = ({ id, item, index, loadFile, remove }) => {
           className="absolute inset-0 z-0 object-cover w-full h-full border-4 border-white preview"
           alt={item.file.name}
           src={loadFile(item.file)}
+          placeholder="blur" // Use Next.js image optimization for placeholder blur
+          blurDataURL={item.placeholderDataURL} // You'll need to generate this placeholder image yourself
           fill
         />
       ) : (
@@ -112,6 +114,8 @@ const FilePreview = ({ id, item, index, loadFile, remove }) => {
           className="absolute inset-0 z-0 object-cover w-full h-full border-4 border-white preview"
           alt={item.name}
           src={item.url}
+          placeholder="blur" // Use Next.js image optimization for placeholder blur
+          blurDataURL={item.placeholderDataURL} // You'll need to generate this placeholder image yourself
           fill
         />
       )}

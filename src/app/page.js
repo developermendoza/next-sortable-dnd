@@ -21,12 +21,27 @@ import { v4 as uuidv4 } from "uuid";
 function HomePage() {
   const [submitData, setSubmitData] = useState(null);
   const [items, setItems] = useState([
-    { id: 1, name: "item 1", url: "/images/item-1.jpeg" },
-    { id: 2, name: "item 2", url: "/images/item-2.jpeg" },
-    { id: 3, name: "item 3", url: "/images/item-3.jpeg" },
-    // { id: 4, name: "item 4", url: "/images/item-4.jpeg" },
-    // { id: 5, name: "item 5", url: "/images/item-5.jpeg" },
-    // { id: 6, name: "item 6", url: "/images/item-6.jpeg" },
+    {
+      id: 1,
+      name: "item 1",
+      url: "/images/item-1.jpeg",
+      placeholderDataURL: "/images/no-image.jpg",
+    },
+    {
+      id: 2,
+      name: "item 2",
+      url: "/images/item-2.jpeg",
+      placeholderDataURL: "/images/no-image.jpg",
+    },
+    {
+      id: 3,
+      name: "item 3",
+      url: "/images/item-3.jpeg",
+      placeholderDataURL: "/images/no-image.jpg",
+    },
+    // { id: 4, name: "item 4", url: "/images/item-4.jpeg", placeholderDataURL:"/images/no-image.jpg" },
+    // { id: 5, name: "item 5", url: "/images/item-5.jpeg", placeholderDataURL:"/images/no-image.jpg" },
+    // { id: 6, name: "item 6", url: "/images/item-6.jpeg", placeholderDataURL:"/images/no-image.jpg" },
   ]);
   const dndRef = useRef(null);
   const uniqueId = uuidv4;
@@ -81,6 +96,7 @@ function HomePage() {
   const addFiles = (e) => {
     const newFiles = [...e.target.files].map((file, i) => ({
       id: uniqueId(), // Replace this with your actual unique ID generation logic
+      placeholderDataURL: "/images/no-image.jpeg",
       file: file,
     }));
 
@@ -100,6 +116,7 @@ function HomePage() {
 
     const newFiles = [...droppedFiles].map((file, i) => ({
       id: uniqueId(), // Replace this with your actual unique ID generation logic
+      placeholderDataURL: "/images/no-image.jpeg",
       file: file,
     }));
 
