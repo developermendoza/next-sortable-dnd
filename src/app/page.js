@@ -19,6 +19,7 @@ import {
 import { v4 as uuidv4 } from "uuid";
 
 function HomePage() {
+  const [submitData, setSubmitData] = useState(null);
   const [items, setItems] = useState([
     { id: 1, name: "item 1", url: "/images/item-1.jpeg" },
     { id: 2, name: "item 2", url: "/images/item-2.jpeg" },
@@ -119,6 +120,10 @@ function HomePage() {
     dndRef.current.classList.remove("ring-inset");
   };
 
+  const handleSubmit = () => {
+    setSubmitData(items);
+  };
+
   return (
     <div className="bg-white p7 rounded w-9/12 mx-auto">
       <div className="relative flex flex-col p-4 text-gray-400 border border-gray-200 rounded">
@@ -153,6 +158,22 @@ function HomePage() {
           )}
         </DndContext>
       </div>
+      <div className="text-center my-4">
+        <button
+          type="button"
+          onClick={handleSubmit}
+          className="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-bold rounded-lg text-sm px-10 py-5 mr-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700"
+        >
+          SUBMIT
+        </button>
+      </div>
+      <ul>
+        {submitData && <b>Data:</b>}
+        {submitData &&
+          submitData.map((data) => (
+            <li key={data.id}>{data.file ? data.file.name : data.url}</li>
+          ))}
+      </ul>
     </div>
   );
 }
