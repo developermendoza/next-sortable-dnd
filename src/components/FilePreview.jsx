@@ -100,33 +100,22 @@ const FilePreview = ({ id, item, index, loadFile, remove, isDragging }) => {
         </svg>
       ) : null}
 
-      {item.file && !isDragging && item.file.type.includes("image/") ? (
+      {isDragging && !item.isVisible ? (
+        <Image
+          className="absolute inset-0 z-0 object-cover w-full h-full border-4 border-white preview"
+          alt={"placeholder"}
+          src={item.placeholderDataURL}
+          placeholder="blur"
+          blurDataURL={item.placeholderDataURL}
+          fill
+        />
+      ) : item.file && item.file.type.includes("image/") ? (
         <Image
           className="absolute inset-0 z-0 object-cover w-full h-full border-4 border-white preview"
           alt={item.file.name}
           src={loadFile(item.file)}
-          placeholder="blur" // Use Next.js image optimization for placeholder blur
-          blurDataURL={item.placeholderDataURL} // You'll need to generate this placeholder image yourself
-          fill
-        />
-      ) : (
-        <Image
-          className="absolute inset-0 z-0 object-cover w-full h-full border-4 border-white preview"
-          alt={item.name ? item.name : "placeholder"}
-          src={item.url ? item.url : item.placeholderDataURL}
-          placeholder="blur" // Use Next.js image optimization for placeholder blur
-          blurDataURL={item.placeholderDataURL} // You'll need to generate this placeholder image yourself
-          fill
-        />
-      )}
-
-      {/* {item.file && item.file.type.includes("image/") ? (
-        <Image
-          className="absolute inset-0 z-0 object-cover w-full h-full border-4 border-white preview"
-          alt={item.file.name}
-          src={loadFile(item.file)}
-          placeholder="blur" // Use Next.js image optimization for placeholder blur
-          blurDataURL={item.placeholderDataURL} // You'll need to generate this placeholder image yourself
+          placeholder="blur"
+          blurDataURL={item.placeholderDataURL}
           fill
         />
       ) : (
@@ -134,11 +123,10 @@ const FilePreview = ({ id, item, index, loadFile, remove, isDragging }) => {
           className="absolute inset-0 z-0 object-cover w-full h-full border-4 border-white preview"
           alt={item.name}
           src={item.url}
-          placeholder="blur" // Use Next.js image optimization for placeholder blur
-          blurDataURL={item.placeholderDataURL} // You'll need to generate this placeholder image yourself
           fill
         />
-      )} */}
+      )}
+
       {item.file && item.file.type.includes("video/") ? (
         <video className="absolute inset-0 object-cover w-full h-full border-4 border-white pointer-events-none preview">
           <source src={loadFile(item.file)} type="video/mp4" />

@@ -28,22 +28,25 @@ function HomePage() {
       name: "item 1",
       url: "/images/item-1.jpeg",
       placeholderDataURL: "/images/no-image.jpg",
+      isVisible: true,
     },
     {
       id: 2,
       name: "item 2",
       url: "/images/item-2.jpeg",
       placeholderDataURL: "/images/no-image.jpg",
+      isVisible: true,
     },
     {
       id: 3,
       name: "item 3",
       url: "/images/item-3.jpeg",
       placeholderDataURL: "/images/no-image.jpg",
+      isVisible: true,
     },
-    // { id: 4, name: "item 4", url: "/images/item-4.jpeg", placeholderDataURL:"/images/no-image.jpg" },
-    // { id: 5, name: "item 5", url: "/images/item-5.jpeg", placeholderDataURL:"/images/no-image.jpg"},
-    // { id: 6, name: "item 6", url: "/images/item-6.jpeg", placeholderDataURL:"/images/no-image.jpg"},
+    // { id: 4, name: "item 4", url: "/images/item-4.jpeg", placeholderDataURL:"/images/no-image.jpg",isVisible: true  },
+    // { id: 5, name: "item 5", url: "/images/item-5.jpeg", placeholderDataURL:"/images/no-image.jpg",isVisible: true },
+    // { id: 6, name: "item 6", url: "/images/item-6.jpeg", placeholderDataURL:"/images/no-image.jpg",isVisible: true },
   ]);
   const dndRef = useRef(null);
   const uniqueId = uuidv4;
@@ -64,13 +67,14 @@ function HomePage() {
 
   if (!isMounted) return null;
 
-  const handleDragStart = () => {
+  const handleDragStart = (event) => {
     setIsDragging(true);
-    // setItems((prevItems) =>
-    //   prevItems.map((prevItem) =>
-    //     prevItem.id === id ? { ...prevItem, isVisible: false } : prevItem
-    //   )
-    // );
+    const { active, over } = event;
+    setItems((prevItems) =>
+      prevItems.map((prevItem) =>
+        prevItem.id === active.id ? { ...prevItem, isVisible: false } : prevItem
+      )
+    );
   };
 
   // function handleDragEnd(event) {
@@ -86,21 +90,20 @@ function HomePage() {
   // }
 
   function handleDragEnd(event) {
-    setIsDragging(false);
     const { active, over } = event;
+    setIsDragging(false);
+    setItems((prevItems) =>
+      prevItems.map((prevItem) =>
+        prevItem.id === active.id ? { ...prevItem, isVisible: true } : prevItem
+      )
+    );
+
     if (active && active.id !== over.id) {
       setItems((items) => {
         const oldIndex = items.findIndex((item) => item.id === active.id);
         const newIndex = items.findIndex((item) => item.id === over.id);
 
-        // Toggle visibility for the dragged and dropped items
-        const updatedItems = items.map((item) =>
-          item.id === active.id || item.id === over.id
-            ? { ...item, isVisible: true } // Show images after drop
-            : item
-        );
-
-        return arrayMove(updatedItems, oldIndex, newIndex);
+        return arrayMove(items, oldIndex, newIndex);
       });
     }
   }
@@ -129,29 +132,11 @@ function HomePage() {
       id: uniqueId(), // Replace this with your actual unique ID generation logic
       placeholderDataURL: "/images/no-image.jpg",
       file: file,
+      isVisible: true,
     }));
 
     setItems((prevItems) => [...prevItems, ...newFiles]);
   };
-
-  // const addFiles = (e) => {
-  //   const newFiles = [...e.target.files].map((file, i) => {
-  //     if (file.size <= MAX_FILE_SIZE) {
-  //       return {
-  //         id: uniqueId(),
-  //         placeholderDataURL: "/images/no-image.jpg",
-  //         file: file,
-  //       };
-  //     } else {
-  //       console.warn(`File ${file.name} exceeds the maximum allowed size.`);
-  //       return null;
-  //     }
-  //   });
-
-  //   const validFiles = newFiles.filter((file) => file !== null);
-
-  //   setItems((prevItems) => [...prevItems, ...validFiles]);
-  // };
 
   const onDrop = (e) => {
     e.preventDefault();
@@ -168,6 +153,7 @@ function HomePage() {
       id: uniqueId(), // Replace this with your actual unique ID generation logic
       placeholderDataURL: "/images/no-image.jpg",
       file: file,
+      isVisible: true,
     }));
 
     setItems((prevItems) => [...prevItems, ...newFiles]);
@@ -190,6 +176,8 @@ function HomePage() {
   const handleSubmit = () => {
     setSubmitData(items);
   };
+
+  console.log("items: ", items);
 
   return (
     <div className="bg-white p7 rounded w-9/12 mx-auto">
