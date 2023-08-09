@@ -40,7 +40,15 @@ const FilePreview = ({
       ref={setNodeRef}
     >
       <button
-        className="absolute top-0 right-0 z-50 p-1 bg-white rounded-bl focus:outline-none"
+        {...listeners}
+        {...attributes}
+        className="absolute top-0 cursor-grab right-0 z-50 p-1 bg-white rounded-bl focus:outline-none"
+        type="button"
+      >
+        <Image alt="drag" src="/images/drag.png" height={18} width={18} />
+      </button>
+      <button
+        className="absolute top-0 left-0 z-50 p-1 bg-white rounded-bl focus:outline-none"
         type="button"
         onClick={() => remove(index)}
       >
@@ -59,14 +67,7 @@ const FilePreview = ({
           />
         </svg>
       </button>
-      <button
-        {...listeners}
-        {...attributes}
-        className="absolute top-0 cursor-grab left-0 z-50 p-1 bg-white rounded-bl focus:outline-none"
-        type="button"
-      >
-        <Image alt="drag" src="/images/drag.png" height={18} width={18} />
-      </button>
+
       {item.file && item.file.type.includes("audio/") && (
         <svg
           className="absolute w-12 h-12 text-gray-400 transform top-1/2 -translate-y-2/3"
