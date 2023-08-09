@@ -2,6 +2,8 @@ import React from "react";
 import Image from "next/image";
 import { CSS } from "@dnd-kit/utilities";
 import { useSortable } from "@dnd-kit/sortable";
+import UseAnimations from "react-useanimations";
+import loading2 from "react-useanimations/lib/loading2";
 
 function humanFileSize(size) {
   const i = Math.floor(Math.log(size) / Math.log(1024));
@@ -30,6 +32,8 @@ const FilePreview = ({ id, item, index, loadFile, remove, isDragging }) => {
     userDrag: "none", // Try this CSS property
     userSelect: "none", // Try this CSS property
   };
+
+  // console.log(isDragging && index);
 
   return (
     <div
@@ -101,28 +105,23 @@ const FilePreview = ({ id, item, index, loadFile, remove, isDragging }) => {
       ) : null}
 
       {isDragging && !item.isVisible ? (
-        <Image
-          className="absolute inset-0 z-0 object-cover w-full h-full border-4 border-white preview"
-          alt={"placeholder"}
-          src={item.placeholderDataURL}
-          placeholder="blur"
-          blurDataURL={item.placeholderDataURL}
-          fill
-        />
-      ) : item.file && item.file.type.includes("image/") ? (
-        <Image
-          className="absolute inset-0 z-0 object-cover w-full h-full border-4 border-white preview"
-          alt={item.file.name}
-          src={loadFile(item.file)}
-          placeholder="blur"
-          blurDataURL={item.placeholderDataURL}
-          fill
-        />
+        <div className="text-center flex justify-center items-center">
+          <i className="absolute text-black text-center flex justify-center items-center -top-20 bottom-0">
+            Moving ...
+          </i>
+          <UseAnimations
+            animation={loading2}
+            className="absolute  inset-0 z-0 flex justify-center items-center text-center m-auto object-cover w-full h-full"
+            size={54}
+          />
+        </div>
       ) : (
         <Image
           className="absolute inset-0 z-0 object-cover w-full h-full border-4 border-white preview"
-          alt={item.name}
+          alt={item.name ? item.name : item.file.name}
           src={item.url}
+          placeholder="blur"
+          blurDataURL={item.placeholderDataURL}
           fill
         />
       )}
@@ -136,7 +135,6 @@ const FilePreview = ({ id, item, index, loadFile, remove, isDragging }) => {
           <source src={item.url} type="video/mp4" />
         </video>
       )}
-
       <div className="absolute bottom-0 left-0 right-0 flex flex-col p-2 text-xs bg-white bg-opacity-50">
         <span className="w-full font-bold text-gray-900 truncate">
           {item.name ? item.name : item.file.name}

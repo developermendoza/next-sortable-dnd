@@ -3,6 +3,8 @@ import React, { useState, useRef, useId, useEffect } from "react";
 import createFileList from "create-file-list";
 import FilePreview from "@/components/FilePreview";
 import DropZone from "@/components/DropZone";
+import { CSS } from "@dnd-kit/utilities";
+import Resizer from "react-image-file-resizer";
 import {
   DndContext,
   closestCenter,
@@ -17,11 +19,34 @@ import {
   sortableKeyboardCoordinates,
 } from "@dnd-kit/sortable";
 import { v4 as uuidv4 } from "uuid";
+import UseAnimations from "react-useanimations";
+import loading2 from "react-useanimations/lib/loading2";
+import FilePreviewLoader from "@/components/FilePreviewLoader";
 const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
+
+const resizeFile = (file) =>
+  new Promise((resolve) => {
+    Resizer.imageFileResizer(
+      file,
+      300,
+      300,
+      "JPEG",
+      100,
+      0,
+      (uri) => {
+        resolve(uri);
+      },
+      "base64"
+    );
+  });
 
 function HomePage() {
   const [submitData, setSubmitData] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [isFileUploading, setIsFileUploading] = useState({
+    state: false,
+    size: 0,
+  });
   const [items, setItems] = useState([
     {
       id: 1,
@@ -69,7 +94,10 @@ function HomePage() {
 
   const handleDragStart = (event) => {
     setIsDragging(true);
+
     const { active, over } = event;
+
+    // console.log("over: ", over);
     setItems((prevItems) =>
       prevItems.map((prevItem) =>
         prevItem.id === active.id ? { ...prevItem, isVisible: false } : prevItem
@@ -127,19 +155,34 @@ function HomePage() {
     return blobUrl;
   };
 
-  const addFiles = (e) => {
-    const newFiles = [...e.target.files].map((file, i) => ({
-      id: uniqueId(), // Replace this with your actual unique ID generation logic
-      placeholderDataURL: "/images/no-image.jpg",
-      file: file,
-      isVisible: true,
-    }));
+  const addFiles = async (e) => {
+    const newFiles = [];
+    setIsFileUploading({ state: true, size: e.target.files.length });
+    try {
+      for (const file of e.target.files) {
+        const resizedFile = await resizeFile(file); // Resize each file
+        newFiles.push({
+          id: uniqueId(), // Replace this with your actual unique ID generation logic
+          placeholderDataURL: "/images/no-image.jpg",
+          file,
+          url: resizedFile,
+          isVisible: true,
+          isFileUploading: true,
+        });
+      }
 
-    setItems((prevItems) => [...prevItems, ...newFiles]);
+      setItems((prevItems) => [...prevItems, ...newFiles]);
+    } catch (error) {
+      console.log("error: ", error);
+      setIsFileUploading({ state: false, size: 0 });
+    } finally {
+      setIsFileUploading({ state: false, size: 0 });
+    }
   };
 
-  const onDrop = (e) => {
+  const onDrop = async (e) => {
     e.preventDefault();
+
     dndRef.current.classList.remove("border-blue-400");
     dndRef.current.classList.remove("ring-4");
     dndRef.current.classList.remove("ring-inset");
@@ -148,15 +191,28 @@ function HomePage() {
     const droppedFiles = Array.from(e.dataTransfer.files).filter(
       (file) => file instanceof File
     );
+    setIsFileUploading({ state: true, size: droppedFiles.length });
+    const newFiles = [];
 
-    const newFiles = [...droppedFiles].map((file, i) => ({
-      id: uniqueId(), // Replace this with your actual unique ID generation logic
-      placeholderDataURL: "/images/no-image.jpg",
-      file: file,
-      isVisible: true,
-    }));
+    try {
+      for (const file of droppedFiles) {
+        const resizedFile = await resizeFile(file); // Resize each file
+        newFiles.push({
+          id: uniqueId(), // Replace this with your actual unique ID generation logic
+          placeholderDataURL: "/images/no-image.jpg",
+          file,
+          url: resizedFile,
+          isVisible: true,
+        });
+      }
 
-    setItems((prevItems) => [...prevItems, ...newFiles]);
+      setItems((prevItems) => [...prevItems, ...newFiles]);
+    } catch (error) {
+      console.log("error: ", error);
+      setIsFileUploading({ state: false, size: 0 });
+    } finally {
+      setIsFileUploading({ state: false, size: 0 });
+    }
   };
 
   const onDragEnter = (e) => {
@@ -197,7 +253,7 @@ function HomePage() {
           id={contextId}
         >
           {items.length > 0 && (
-            <div className="grid grid-cols-2 gap-4 mt-4 md:grid-cols-6">
+            <div className="grid grid-cols-2 gap-4 mt-4 md:grid-cols-3 lg:grid-cols-4">
               <SortableContext items={items}>
                 {items.map((item, index) => (
                   <FilePreview
@@ -211,6 +267,10 @@ function HomePage() {
                   />
                 ))}
               </SortableContext>
+              {isFileUploading.state &&
+                Array.from({ length: isFileUploading.size }, (_, index) => (
+                  <FilePreviewLoader key={index} />
+                ))}
             </div>
           )}
         </DndContext>
@@ -225,11 +285,14 @@ function HomePage() {
         </button>
       </div>
       <ul>
-        {submitData && <b>Data:</b>}
-        {submitData &&
-          submitData.map((data) => (
-            <li key={data.id}>{data.file ? data.file.name : data.url}</li>
-          ))}
+        {submitData && (
+          <>
+            <b>Data:</b>
+            {submitData.map((data) => (
+              <li key={data.id}>{data.file ? data.file.name : data.url}</li>
+            ))}
+          </>
+        )}
       </ul>
     </div>
   );
