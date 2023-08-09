@@ -14,6 +14,7 @@ const DropZone = ({ dndRef, onDrop, onDragLeave, onDragEnter, addFiles }) => {
         accept="*"
         type="file"
         multiple
+        // max-size="2097152"
         className="absolute inset-0 z-50 w-full h-full p-0 m-0 outline-none opacity-0 cursor-pointer"
         onChange={addFiles}
         title=""

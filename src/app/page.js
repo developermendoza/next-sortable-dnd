@@ -17,9 +17,11 @@ import {
   sortableKeyboardCoordinates,
 } from "@dnd-kit/sortable";
 import { v4 as uuidv4 } from "uuid";
+const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
 
 function HomePage() {
   const [submitData, setSubmitData] = useState(null);
+  const [isDragging, setIsDragging] = useState(false);
   const [items, setItems] = useState([
     {
       id: 1,
@@ -40,8 +42,8 @@ function HomePage() {
       placeholderDataURL: "/images/no-image.jpg",
     },
     // { id: 4, name: "item 4", url: "/images/item-4.jpeg", placeholderDataURL:"/images/no-image.jpg" },
-    // { id: 5, name: "item 5", url: "/images/item-5.jpeg", placeholderDataURL:"/images/no-image.jpg" },
-    // { id: 6, name: "item 6", url: "/images/item-6.jpeg", placeholderDataURL:"/images/no-image.jpg" },
+    // { id: 5, name: "item 5", url: "/images/item-5.jpeg", placeholderDataURL:"/images/no-image.jpg"},
+    // { id: 6, name: "item 6", url: "/images/item-6.jpeg", placeholderDataURL:"/images/no-image.jpg"},
   ]);
   const dndRef = useRef(null);
   const uniqueId = uuidv4;
@@ -62,14 +64,43 @@ function HomePage() {
 
   if (!isMounted) return null;
 
+  const handleDragStart = () => {
+    setIsDragging(true);
+    // setItems((prevItems) =>
+    //   prevItems.map((prevItem) =>
+    //     prevItem.id === id ? { ...prevItem, isVisible: false } : prevItem
+    //   )
+    // );
+  };
+
+  // function handleDragEnd(event) {
+  //   const { active, over } = event;
+  //   if (active && active.id !== over.id) {
+  //     setItems((items) => {
+  //       const oldIndex = items.findIndex((item) => item.id === active.id);
+  //       const newIndex = items.findIndex((item) => item.id === over.id);
+
+  //       return arrayMove(items, oldIndex, newIndex);
+  //     });
+  //   }
+  // }
+
   function handleDragEnd(event) {
+    setIsDragging(false);
     const { active, over } = event;
     if (active && active.id !== over.id) {
       setItems((items) => {
         const oldIndex = items.findIndex((item) => item.id === active.id);
         const newIndex = items.findIndex((item) => item.id === over.id);
 
-        return arrayMove(items, oldIndex, newIndex);
+        // Toggle visibility for the dragged and dropped items
+        const updatedItems = items.map((item) =>
+          item.id === active.id || item.id === over.id
+            ? { ...item, isVisible: true } // Show images after drop
+            : item
+        );
+
+        return arrayMove(updatedItems, oldIndex, newIndex);
       });
     }
   }
@@ -102,6 +133,25 @@ function HomePage() {
 
     setItems((prevItems) => [...prevItems, ...newFiles]);
   };
+
+  // const addFiles = (e) => {
+  //   const newFiles = [...e.target.files].map((file, i) => {
+  //     if (file.size <= MAX_FILE_SIZE) {
+  //       return {
+  //         id: uniqueId(),
+  //         placeholderDataURL: "/images/no-image.jpg",
+  //         file: file,
+  //       };
+  //     } else {
+  //       console.warn(`File ${file.name} exceeds the maximum allowed size.`);
+  //       return null;
+  //     }
+  //   });
+
+  //   const validFiles = newFiles.filter((file) => file !== null);
+
+  //   setItems((prevItems) => [...prevItems, ...validFiles]);
+  // };
 
   const onDrop = (e) => {
     e.preventDefault();
@@ -155,6 +205,7 @@ function HomePage() {
           sensors={sensors}
           collisionDetection={closestCenter}
           onDragEnd={handleDragEnd}
+          onDragStart={handleDragStart}
           id={contextId}
         >
           {items.length > 0 && (
@@ -168,6 +219,7 @@ function HomePage() {
                     item={item}
                     remove={remove}
                     loadFile={loadFile}
+                    isDragging={isDragging}
                   />
                 ))}
               </SortableContext>

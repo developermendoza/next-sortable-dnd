@@ -12,7 +12,7 @@ function humanFileSize(size) {
   );
 }
 
-const FilePreview = ({ id, item, index, loadFile, remove }) => {
+const FilePreview = ({ id, item, index, loadFile, remove, isDragging }) => {
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id });
 
@@ -100,7 +100,27 @@ const FilePreview = ({ id, item, index, loadFile, remove }) => {
         </svg>
       ) : null}
 
-      {item.file && item.file.type.includes("image/") ? (
+      {item.file && !isDragging && item.file.type.includes("image/") ? (
+        <Image
+          className="absolute inset-0 z-0 object-cover w-full h-full border-4 border-white preview"
+          alt={item.file.name}
+          src={loadFile(item.file)}
+          placeholder="blur" // Use Next.js image optimization for placeholder blur
+          blurDataURL={item.placeholderDataURL} // You'll need to generate this placeholder image yourself
+          fill
+        />
+      ) : (
+        <Image
+          className="absolute inset-0 z-0 object-cover w-full h-full border-4 border-white preview"
+          alt={item.name ? item.name : "placeholder"}
+          src={item.url ? item.url : item.placeholderDataURL}
+          placeholder="blur" // Use Next.js image optimization for placeholder blur
+          blurDataURL={item.placeholderDataURL} // You'll need to generate this placeholder image yourself
+          fill
+        />
+      )}
+
+      {/* {item.file && item.file.type.includes("image/") ? (
         <Image
           className="absolute inset-0 z-0 object-cover w-full h-full border-4 border-white preview"
           alt={item.file.name}
@@ -118,7 +138,7 @@ const FilePreview = ({ id, item, index, loadFile, remove }) => {
           blurDataURL={item.placeholderDataURL} // You'll need to generate this placeholder image yourself
           fill
         />
-      )}
+      )} */}
       {item.file && item.file.type.includes("video/") ? (
         <video className="absolute inset-0 object-cover w-full h-full border-4 border-white pointer-events-none preview">
           <source src={loadFile(item.file)} type="video/mp4" />
