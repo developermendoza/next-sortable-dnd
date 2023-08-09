@@ -19,10 +19,8 @@ import {
   sortableKeyboardCoordinates,
 } from "@dnd-kit/sortable";
 import { v4 as uuidv4 } from "uuid";
-import UseAnimations from "react-useanimations";
-import loading2 from "react-useanimations/lib/loading2";
 import FilePreviewLoader from "@/components/FilePreviewLoader";
-const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
+import DataTable from "@/components/DataTable";
 
 const resizeFile = (file) =>
   new Promise((resolve) => {
@@ -40,6 +38,15 @@ const resizeFile = (file) =>
     );
   });
 
+function humanFileSize(size) {
+  const i = Math.floor(Math.log(size) / Math.log(1024));
+  return (
+    (size / Math.pow(1024, i)).toFixed(2) * 1 +
+    " " +
+    ["B", "kB", "MB", "GB", "TB"][i]
+  );
+}
+
 function HomePage() {
   const [submitData, setSubmitData] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -52,6 +59,7 @@ function HomePage() {
       id: 1,
       name: "item 1",
       url: "/images/item-1.jpeg",
+      size: 175482,
       placeholderDataURL: "/images/no-image.jpg",
       isVisible: true,
     },
@@ -59,6 +67,7 @@ function HomePage() {
       id: 2,
       name: "item 2",
       url: "/images/item-2.jpeg",
+      size: 367204,
       placeholderDataURL: "/images/no-image.jpg",
       isVisible: true,
     },
@@ -66,12 +75,13 @@ function HomePage() {
       id: 3,
       name: "item 3",
       url: "/images/item-3.jpeg",
+      size: 457692,
       placeholderDataURL: "/images/no-image.jpg",
       isVisible: true,
     },
-    // { id: 4, name: "item 4", url: "/images/item-4.jpeg", placeholderDataURL:"/images/no-image.jpg",isVisible: true  },
-    // { id: 5, name: "item 5", url: "/images/item-5.jpeg", placeholderDataURL:"/images/no-image.jpg",isVisible: true },
-    // { id: 6, name: "item 6", url: "/images/item-6.jpeg", placeholderDataURL:"/images/no-image.jpg",isVisible: true },
+    // { id: 4, name: "item 4", url: "/images/item-4.jpeg", size: 255709, placeholderDataURL:"/images/no-image.jpg",isVisible: true  },
+    // { id: 5, name: "item 5", url: "/images/item-5.jpeg", size: 124636, placeholderDataURL:"/images/no-image.jpg",isVisible: true },
+    // { id: 6, name: "item 6", url: "/images/item-6.jpeg", size: 126476, placeholderDataURL:"/images/no-image.jpg",isVisible: true },
   ]);
   const dndRef = useRef(null);
   const uniqueId = uuidv4;
@@ -96,26 +106,12 @@ function HomePage() {
     setIsDragging(true);
 
     const { active, over } = event;
-
-    // console.log("over: ", over);
     setItems((prevItems) =>
       prevItems.map((prevItem) =>
         prevItem.id === active.id ? { ...prevItem, isVisible: false } : prevItem
       )
     );
   };
-
-  // function handleDragEnd(event) {
-  //   const { active, over } = event;
-  //   if (active && active.id !== over.id) {
-  //     setItems((items) => {
-  //       const oldIndex = items.findIndex((item) => item.id === active.id);
-  //       const newIndex = items.findIndex((item) => item.id === over.id);
-
-  //       return arrayMove(items, oldIndex, newIndex);
-  //     });
-  //   }
-  // }
 
   function handleDragEnd(event) {
     const { active, over } = event;
@@ -233,67 +229,63 @@ function HomePage() {
     setSubmitData(items);
   };
 
-  console.log("items: ", items);
-
   return (
-    <div className="bg-white p7 rounded w-9/12 mx-auto">
-      <div className="relative flex flex-col p-4 text-gray-400 border border-gray-200 rounded">
-        <DropZone
-          dndRef={dndRef}
-          onDrop={onDrop}
-          onDragLeave={onDragLeave}
-          onDragEnter={onDragEnter}
-          addFiles={addFiles}
-        />
-        <DndContext
-          sensors={sensors}
-          collisionDetection={closestCenter}
-          onDragEnd={handleDragEnd}
-          onDragStart={handleDragStart}
-          id={contextId}
-        >
-          {items.length > 0 && (
-            <div className="grid grid-cols-2 gap-4 mt-4 md:grid-cols-3 lg:grid-cols-4">
-              <SortableContext items={items}>
-                {items.map((item, index) => (
-                  <FilePreview
-                    key={item.id}
-                    id={item.id}
-                    index={index}
-                    item={item}
-                    remove={remove}
-                    loadFile={loadFile}
-                    isDragging={isDragging}
-                  />
-                ))}
-              </SortableContext>
-              {isFileUploading.state &&
-                Array.from({ length: isFileUploading.size }, (_, index) => (
-                  <FilePreviewLoader key={index} />
-                ))}
-            </div>
-          )}
-        </DndContext>
-      </div>
-      <div className="text-center my-4">
-        <button
-          type="button"
-          onClick={handleSubmit}
-          className="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-bold rounded-lg text-sm px-10 py-5 mr-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700"
-        >
-          SUBMIT
-        </button>
-      </div>
-      <ul>
+    <div className="bg-white p7 rounded w-9/12 mx-auto ">
+      <div className="grid gap-8 py-20">
+        <div>
+          <div className="relative flex flex-col p-4 text-gray-400 border border-gray-200 rounded">
+            <DropZone
+              dndRef={dndRef}
+              onDrop={onDrop}
+              onDragLeave={onDragLeave}
+              onDragEnter={onDragEnter}
+              addFiles={addFiles}
+            />
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragEnd={handleDragEnd}
+              onDragStart={handleDragStart}
+              id={contextId}
+            >
+              {items.length > 0 && (
+                <div className="grid grid-cols-2 gap-4 mt-4 md:grid-cols-3 lg:grid-cols-4">
+                  <SortableContext items={items}>
+                    {items.map((item, index) => (
+                      <FilePreview
+                        key={item.id}
+                        id={item.id}
+                        index={index}
+                        item={item}
+                        remove={remove}
+                        loadFile={loadFile}
+                        isDragging={isDragging}
+                        humanFileSize={humanFileSize}
+                      />
+                    ))}
+                  </SortableContext>
+                  {isFileUploading.state &&
+                    Array.from({ length: isFileUploading.size }, (_, index) => (
+                      <FilePreviewLoader key={index} />
+                    ))}
+                </div>
+              )}
+            </DndContext>
+          </div>
+          <div className="text-center my-4">
+            <button
+              type="button"
+              onClick={handleSubmit}
+              className="text-white bg-gray-800 hover:bg-gray-900 focus:outline-none focus:ring-4 focus:ring-gray-300 font-bold rounded-lg text-sm px-10 py-5 mr-2 mb-2 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-700 dark:border-gray-700"
+            >
+              SUBMIT
+            </button>
+          </div>
+        </div>
         {submitData && (
-          <>
-            <b>Data:</b>
-            {submitData.map((data) => (
-              <li key={data.id}>{data.file ? data.file.name : data.url}</li>
-            ))}
-          </>
+          <DataTable submitData={submitData} humanFileSize={humanFileSize} />
         )}
-      </ul>
+      </div>
     </div>
   );
 }

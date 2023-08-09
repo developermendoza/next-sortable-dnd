@@ -5,35 +5,24 @@ import { useSortable } from "@dnd-kit/sortable";
 import UseAnimations from "react-useanimations";
 import loading2 from "react-useanimations/lib/loading2";
 
-function humanFileSize(size) {
-  const i = Math.floor(Math.log(size) / Math.log(1024));
-  return (
-    (size / Math.pow(1024, i)).toFixed(2) * 1 +
-    " " +
-    ["B", "kB", "MB", "GB", "TB"][i]
-  );
-}
-
-const FilePreview = ({ id, item, index, loadFile, remove, isDragging }) => {
+const FilePreview = ({
+  id,
+  item,
+  index,
+  loadFile,
+  remove,
+  isDragging,
+  humanFileSize,
+}) => {
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id });
 
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-    backgroundSize: "cover",
-    backgroundRepeat: "no-repeat",
-    backgroundPosition: "center",
     zIndex: "50",
-    WebkitUserDrag: "none",
-    WebkitTouchCallout: "none",
     paddingTop: "100%",
-    touchAction: "none",
-    userDrag: "none", // Try this CSS property
-    userSelect: "none", // Try this CSS property
   };
-
-  // console.log(isDragging && index);
 
   return (
     <div
@@ -139,11 +128,10 @@ const FilePreview = ({ id, item, index, loadFile, remove, isDragging }) => {
         <span className="w-full font-bold text-gray-900 truncate">
           {item.name ? item.name : item.file.name}
         </span>
-        {item.file && (
-          <span className="w-full font-bold text-gray-900 truncate">
-            {humanFileSize(item.file.size)}
-          </span>
-        )}
+
+        <span className="w-full font-bold text-gray-900 truncate">
+          {humanFileSize(item.file ? item.file.size : item.size)}
+        </span>
       </div>
     </div>
   );
