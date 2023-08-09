@@ -20,8 +20,16 @@ const FilePreview = ({
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
+    backgroundSize: "cover",
+    backgroundRepeat: "no-repeat",
+    backgroundPosition: "center",
     zIndex: "50",
+    WebkitUserDrag: "none",
+    WebkitTouchCallout: "none",
     paddingTop: "100%",
+    touchAction: "none",
+    userDrag: "none", // Try this CSS property
+    userSelect: "none", // Try this CSS property
   };
 
   return (
