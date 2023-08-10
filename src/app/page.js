@@ -86,6 +86,7 @@ function HomePage() {
   const dndRef = useRef(null);
   const uniqueId = uuidv4;
 
+  // this is used because I was getting an error with the DndContext component.
   const [isMounted, setIsMounted] = useState(false);
   const contextId = useId();
 
@@ -96,10 +97,12 @@ function HomePage() {
     })
   );
 
+  // this is used because I was getting an error with the DndContext component.
   useEffect(() => {
     setIsMounted(true);
   }, []);
 
+  // this is used because I was getting an error with the DndContext component.
   if (!isMounted) return null;
 
   const handleDragStart = (event) => {

@@ -14,6 +14,10 @@ This is a Next.js web application that allows users to upload images, rearrange 
 - Preview images before submitting.
 - Submit the selected images for processing.
 
+## About Image Resizing
+
+In order to enhance the sorting experience and prevent potential performance issues or crashes, images uploaded to the app are automatically resized for quicker sorting. This optimization ensures smoother drag and drop interactions without compromising the user experience.
+
 ## Getting Started
 
 To get started with this project, follow these steps:
