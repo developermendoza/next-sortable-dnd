@@ -4,7 +4,7 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 This is a Next.js web application that allows users to upload images, rearrange their order, and view the list of uploaded images before submitting.
 
-![alt text](images/web-app-screenshot.png)
+![alt text](public/images/web-app-screenshot.png)
 
 ## Features
 
