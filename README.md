@@ -25,10 +25,25 @@ git clone https://github.com/your-username/image-gallery-app.git
 2. Navigate to the project directory:
 
 ```bash
-cd image-gallery-app
+npm install
+```
+
+4. Run the development server:
+
+```bash
+npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+## Dependencies
+
+- [@dnd-kit/core](https://dndkit.com/)
+- [@dnd-kit/modifiers](https://dndkit.com/)
+- [@dnd-kit/utilities](https://dndkit.com/)
+- [create-file-list](https://www.npmjs.com/package/create-file-list)
+- [react-image-file-resizer](https://www.npmjs.com/package/react-image-file-resizer)
+- [uuid](https://www.npmjs.com/package/uuid)
 
 You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
 
