@@ -4,7 +4,7 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 This is a Next.js web application that allows users to upload images, rearrange their order, and view the list of uploaded images before submitting.
 
-## Learn More
+## Features
 
 - Upload images using drag and drop or file selection.
 - Rearrange uploaded images by dragging and dropping.
@@ -12,12 +12,14 @@ This is a Next.js web application that allows users to upload images, rearrange 
 - Preview images before submitting.
 - Submit the selected images for processing.
 
+## Getting Started
+
+To get started with this project, follow these steps:
+
+1.Clone the repository to your local machine
+
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
+git clone https://github.com/your-username/image-gallery-app.git
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
