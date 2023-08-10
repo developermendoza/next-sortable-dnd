@@ -153,26 +153,28 @@ function HomePage() {
 
     return blobUrl;
   };
-
+  const allowedImageTypes = ["image/jpeg", "image/png", "image/gif"];
   const addFiles = async (e) => {
     const newFiles = [];
     setIsFileUploading({ state: true, size: e.target.files.length });
     try {
       for (const file of e.target.files) {
-        const resizedFile = await resizeFile(file); // Resize each file
-        newFiles.push({
-          id: uniqueId(), // Replace this with your actual unique ID generation logic
-          placeholderDataURL: "/images/no-image.jpg",
-          file,
-          url: resizedFile,
-          isVisible: true,
-          isFileUploading: true,
-        });
+        if (allowedImageTypes.includes(file.type)) {
+          const resizedFile = await resizeFile(file); // Resize each file
+          newFiles.push({
+            id: uniqueId(), // Replace this with your actual unique ID generation logic
+            placeholderDataURL: "/images/no-image.jpg",
+            file,
+            url: resizedFile,
+            isVisible: true,
+            isFileUploading: true,
+          });
+        }
       }
 
       setItems((prevItems) => [...prevItems, ...newFiles]);
     } catch (error) {
-      console.log("error: ", error);
+      console.log("hello");
       setIsFileUploading({ state: false, size: 0 });
     } finally {
       setIsFileUploading({ state: false, size: 0 });
@@ -185,6 +187,7 @@ function HomePage() {
     dndRef.current.classList.remove("border-blue-400");
     dndRef.current.classList.remove("ring-4");
     dndRef.current.classList.remove("ring-inset");
+    setIsFileUploading({ state: true, size: e.target.files.length });
 
     // Extract the files from the DataTransfer object and create a custom array
     const droppedFiles = Array.from(e.dataTransfer.files).filter(
@@ -195,14 +198,16 @@ function HomePage() {
 
     try {
       for (const file of droppedFiles) {
-        const resizedFile = await resizeFile(file); // Resize each file
-        newFiles.push({
-          id: uniqueId(), // Replace this with your actual unique ID generation logic
-          placeholderDataURL: "/images/no-image.jpg",
-          file,
-          url: resizedFile,
-          isVisible: true,
-        });
+        if (allowedImageTypes.includes(file.type)) {
+          const resizedFile = await resizeFile(file); // Resize each file
+          newFiles.push({
+            id: uniqueId(), // Replace this with your actual unique ID generation logic
+            placeholderDataURL: "/images/no-image.jpg",
+            file,
+            url: resizedFile,
+            isVisible: true,
+          });
+        }
       }
 
       setItems((prevItems) => [...prevItems, ...newFiles]);
