@@ -22,6 +22,12 @@ To get started with this project, follow these steps:
 git clone https://github.com/your-username/image-gallery-app.git
 ```
 
+2.Navigate to the project directory:
+
+```bash
+cd image-gallery-app
+```
+
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
 You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
