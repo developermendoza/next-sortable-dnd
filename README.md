@@ -46,6 +46,7 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 - [create-file-list](https://www.npmjs.com/package/create-file-list)
 - [react-image-file-resizer](https://www.npmjs.com/package/react-image-file-resizer)
 - [uuid](https://www.npmjs.com/package/uuid)
+- [tailwindcss](https://tailwindcss.com/docs/installation)
 
 You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
 
